@@ -1,0 +1,39 @@
+#include <iostream>
+#include <iomanip>
+#include <windows.h> 
+using namespace std;
+
+int main()
+{
+
+    LARGE_INTEGER frequency, start, end;
+    QueryPerformanceFrequency(&frequency);
+    QueryPerformanceCounter(&start);
+
+    int n = 10000;
+    long long sum = 0;
+    int repeat = 10000;
+    for (int t = 0; t < repeat; t++) {
+        cout << t << ' ';
+        long long c = 0;
+        for (int i = 0; i < n; i++) {
+            c += i;
+        }
+        if (t == repeat - 1)sum = c;
+    }
+    cout << sum;
+
+    QueryPerformanceCounter(&end);
+    double total_time = (double)(end.QuadPart - start.QuadPart) * 1000.0 / frequency.QuadPart;
+    double avg_time = total_time / repeat;
+
+    cout << "\n\n==================== s1性能测试结果 ====================\n";
+    cout << "矩阵规模 n = " << n << endl;
+    cout << "重复计算次数 = " << repeat << endl;
+    cout << fixed << setprecision(2);
+    cout << "总运行时间：" << total_time << " ms\n";
+    cout << "单次平均时间：" << avg_time << " ms\n";
+
+    system("pause");
+    return 0;
+}
