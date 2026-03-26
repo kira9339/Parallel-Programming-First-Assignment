@@ -1,0 +1,53 @@
+#include <iostream>
+#include <iomanip>
+#include <windows.h> 
+using namespace std;
+
+int main()
+{
+    LARGE_INTEGER frequency, start, end;
+    QueryPerformanceFrequency(&frequency);
+    QueryPerformanceCounter(&start);
+
+    int n = 500;
+    int** b = new int* [n];
+    for (int i = 0; i < n; i++) {
+        b[i] = new int[n];
+    }
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            b[i][j] = i + j;
+        }
+    }
+    long long* sum = new long long[n];
+    int repeat = 10000;
+    int* a = new int[n];
+    for (int i = 0; i < n; i++)a[i] = i;
+    for (int i = 0; i < n; i++)sum[i] = 0;
+    int cnt = 0;
+    for (int t = 0; t < repeat; t++) {
+            cout<<t<<' ';
+        for (int j = 0; j < n; j++) {
+            long long m = 0;
+            for (int i = 0; i < n; i++) {
+                m += b[j][i] * a[j];
+            }
+            sum[j] = m;
+        }
+    }
+    for (int i = 0; i < n; i++)cout << sum[i] << ' ';
+
+    QueryPerformanceCounter(&end);
+    double total_time = (double)(end.QuadPart - start.QuadPart) * 1000.0 / frequency.QuadPart;
+    double avg_time = total_time / repeat;
+
+    cout << "\n\n==================== bw性能测试结果 ====================\n";
+    cout << "矩阵规模 n = " << n << endl;
+    cout << "重复计算次数 = " << repeat << endl;
+    cout << fixed << setprecision(2);
+    cout << "总运行时间：" << total_time << " ms\n";
+    cout << "单次平均时间：" << avg_time << " ms\n";
+
+    system("pause");
+    return 0;
+}
