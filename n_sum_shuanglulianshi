@@ -1,0 +1,49 @@
+#include <iostream>
+#include <iomanip>
+#include <windows.h>  
+using namespace std;
+long long sum(int* nums, int left, int right) {
+    if (left == right) {
+        return nums[left];
+    }
+    // 区间内有2个元素，直接相加
+    if (right - left == 1) {
+        return (long long)nums[left] + nums[right];
+    }
+
+    int mid = left + (right - left) / 2;
+    long long leftSum = sum(nums, left, mid);
+    long long rightSum = sum(nums, mid + 1, right);
+
+    return leftSum + rightSum;
+}
+int main()
+{
+    LARGE_INTEGER frequency, start, end;
+    QueryPerformanceFrequency(&frequency);
+    QueryPerformanceCounter(&start);
+
+    int n = 10000;
+    int* nums = new int[n];
+    for (int i = 0; i < n; i++)nums[i] = i;
+    long long s = 0;
+    int repeat = 10000;
+    for (int i = 0; i < repeat; i++) {
+        cout << i << ' ';
+        s = sum(nums, 0, n - 1);
+    }
+    cout << s;
+    QueryPerformanceCounter(&end);
+    double total_time = (double)(end.QuadPart - start.QuadPart) * 1000.0 / frequency.QuadPart;
+    double avg_time = total_time / repeat;
+
+    cout << "\n\n==================== 性能测试结果 ====================\n";
+    cout << "矩阵规模 n = " << n << endl;
+    cout << "重复计算次数 = " << repeat << endl;
+    cout << fixed << setprecision(2);
+    cout << "总运行时间：" << total_time << " ms\n";
+    cout << "单次平均时间：" << avg_time << " ms\n";
+
+    system("pause");
+    return 0;
+}
